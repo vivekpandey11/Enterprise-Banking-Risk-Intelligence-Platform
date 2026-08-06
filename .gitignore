@@ -1,0 +1,45 @@
+# Virtual Environment
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment Variables
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Model Files
+*.pkl
+*.joblib
+
+# Streamlit Cache
+.streamlit/
+
+# Database Backups
+database/backups/
+
+# Power BI Temp
+*.pbix.autosave
+
+# Test Cache
+.pytest_cache/
+
+# Coverage
+.coverage
+htmlcov/
