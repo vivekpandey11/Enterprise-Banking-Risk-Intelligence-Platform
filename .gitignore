@@ -43,3 +43,8 @@ database/backups/
 # Coverage
 .coverage
 htmlcov/
+
+.env
+.venv/
+__pycache__/
+*.pyc
