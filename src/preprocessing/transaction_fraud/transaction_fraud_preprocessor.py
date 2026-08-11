@@ -1,27 +1,27 @@
 from pathlib import Path
 import json
-
 import joblib
-import numpy as np
 import pandas as pd
 
-from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.preprocessing import StandardScaler
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
 
 
 # ============================================================
-# TRANSACTION FRAUD ML PREPROCESSING PIPELINE
+# TRANSACTION FRAUD PREPROCESSING PIPELINE
 # ============================================================
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
-INPUT_FILE = (
+RAW_FILE = (
     PROJECT_ROOT
     / "data"
-    / "staging"
+    / "raw"
     / "transaction_fraud"
-    / "transaction_fraud_clean.csv"
+    / "creditcard.csv"
 )
 
 OUTPUT_DIR = (
@@ -31,62 +31,64 @@ OUTPUT_DIR = (
     / "transaction_fraud"
 )
 
-TRAIN_OUTPUT = OUTPUT_DIR / "transaction_fraud_train_processed.csv"
-VALIDATION_OUTPUT = OUTPUT_DIR / "transaction_fraud_validation_processed.csv"
-PREPROCESSOR_OUTPUT = OUTPUT_DIR / "transaction_fraud_preprocessor.joblib"
-METADATA_OUTPUT = OUTPUT_DIR / "transaction_fraud_preprocessing_metadata.json"
+OUTPUT_DIR.mkdir(
+    parents=True,
+    exist_ok=True,
+)
+
+TRAIN_FILE = (
+    OUTPUT_DIR
+    / "transaction_fraud_train_processed.csv"
+)
+
+VALIDATION_FILE = (
+    OUTPUT_DIR
+    / "transaction_fraud_validation_processed.csv"
+)
+
+PREPROCESSOR_FILE = (
+    OUTPUT_DIR
+    / "transaction_fraud_preprocessor.joblib"
+)
+
+METADATA_FILE = (
+    OUTPUT_DIR
+    / "transaction_fraud_preprocessing_metadata.json"
+)
 
 TARGET_COLUMN = "Class"
-
 RANDOM_STATE = 42
 VALIDATION_SIZE = 0.20
 
 
-def main():
-    print("=" * 70)
-    print("TRANSACTION FRAUD ML PREPROCESSING PIPELINE")
-    print("=" * 70)
+# ============================================================
+# VALIDATION
+# ============================================================
 
-    print("\nProject root:")
-    print(PROJECT_ROOT)
-
-    # --------------------------------------------------------
-    # 1. Check input
-    # --------------------------------------------------------
-
-    print("\nChecking input dataset...")
-
-    if not INPUT_FILE.exists():
+def require_file(path):
+    if not path.exists():
         raise FileNotFoundError(
-            f"Input dataset not found:\n{INPUT_FILE}"
+            f"Required dataset not found:\n{path}"
         )
 
-    print(f"Input file: {INPUT_FILE}")
 
-    # --------------------------------------------------------
-    # 2. Create output directory
-    # --------------------------------------------------------
+def validate_dataset(df):
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    required_columns = (
+        ["Time"]
+        + [f"V{i}" for i in range(1, 29)]
+        + ["Amount", "Class"]
+    )
 
-    # --------------------------------------------------------
-    # 3. Load dataset
-    # --------------------------------------------------------
+    missing = [
+        column
+        for column in required_columns
+        if column not in df.columns
+    ]
 
-    print("\nLoading dataset...")
-
-    df = pd.read_csv(INPUT_FILE)
-
-    print(f"Input rows    : {len(df):,}")
-    print(f"Input columns : {len(df.columns)}")
-
-    # --------------------------------------------------------
-    # 4. Validate target
-    # --------------------------------------------------------
-
-    if TARGET_COLUMN not in df.columns:
+    if missing:
         raise ValueError(
-            f"Target column '{TARGET_COLUMN}' not found."
+            f"Missing required columns: {missing}"
         )
 
     if df[TARGET_COLUMN].isna().any():
@@ -94,368 +96,358 @@ def main():
             "Target column contains missing values."
         )
 
-    print(f"\nTarget column : {TARGET_COLUMN}")
+    invalid_targets = set(
+        df[TARGET_COLUMN].unique()
+    ) - {0, 1}
 
-    # --------------------------------------------------------
-    # 5. Separate features and target
-    # --------------------------------------------------------
-
-    X = df.drop(columns=[TARGET_COLUMN])
-    y = df[TARGET_COLUMN].astype(int)
-
-    print(f"Feature count : {X.shape[1]}")
-
-    # --------------------------------------------------------
-    # 6. Target distribution
-    # --------------------------------------------------------
-
-    print("\nTarget distribution")
-
-    target_distribution = y.value_counts().sort_index()
-
-    for value, count in target_distribution.items():
-        percentage = count / len(y) * 100
-        label = "Legitimate" if value == 0 else "Fraud"
-
-        print(
-            f"{label:<12}: {count:>10,} "
-            f"({percentage:.6f}%)"
+    if invalid_targets:
+        raise ValueError(
+            f"Unexpected target values: {invalid_targets}"
         )
 
-    # --------------------------------------------------------
-    # 7. Feature classification
-    # --------------------------------------------------------
 
-    numeric_features = X.select_dtypes(
-        include=["number"]
-    ).columns.tolist()
+# ============================================================
+# MAIN
+# ============================================================
 
-    categorical_features = X.select_dtypes(
-        include=["object", "category", "bool"]
-    ).columns.tolist()
+def main():
 
-    print("\n## Feature classification")
+    print("=" * 75)
+    print("TRANSACTION FRAUD PREPROCESSING PIPELINE")
+    print("=" * 75)
+
+    require_file(RAW_FILE)
+
+    print("\nLoading raw fraud dataset...")
+    print(RAW_FILE)
+
+    df = pd.read_csv(RAW_FILE)
 
     print(
-        f"Numeric features     : {len(numeric_features)}"
+        f"\nRows    : {len(df):,}"
     )
 
     print(
-        f"Categorical features : {len(categorical_features)}"
+        f"Columns : {len(df.columns)}"
     )
 
-    if numeric_features:
-        print("\nNumeric columns:")
-        print(numeric_features)
-
-    if categorical_features:
-        print("\nCategorical columns:")
-        print(categorical_features)
-
     # --------------------------------------------------------
-    # 8. Train / validation split
+    # Validate schema
     # --------------------------------------------------------
 
-    print("\nSplitting dataset...")
+    print("\nValidating dataset...")
 
-    X_train, X_validation, y_train, y_validation = train_test_split(
-        X,
-        y,
-        test_size=VALIDATION_SIZE,
-        random_state=RANDOM_STATE,
-        stratify=y,
+    validate_dataset(df)
+
+    print("Dataset schema: VALID")
+
+    # --------------------------------------------------------
+    # Remove duplicate transactions
+    # --------------------------------------------------------
+
+    duplicate_count = int(
+        df.duplicated().sum()
     )
 
-    print("\n## Dataset split")
+    print(
+        f"\nDuplicate rows found: {duplicate_count:,}"
+    )
+
+    if duplicate_count > 0:
+        df = df.drop_duplicates().reset_index(
+            drop=True
+        )
+
+    print(
+        f"Rows after duplicate removal: "
+        f"{len(df):,}"
+    )
+
+    # --------------------------------------------------------
+    # Separate target
+    # --------------------------------------------------------
+
+    X = df.drop(
+        columns=[TARGET_COLUMN]
+    )
+
+    y = df[TARGET_COLUMN].astype(int)
+
+    # --------------------------------------------------------
+    # Feature list
+    # --------------------------------------------------------
+
+    numeric_features = list(
+        X.columns
+    )
+
+    # --------------------------------------------------------
+    # Stratified split
+    # --------------------------------------------------------
+
+    print("\nCreating stratified train/validation split...")
+
+    X_train, X_valid, y_train, y_valid = (
+        train_test_split(
+            X,
+            y,
+            test_size=VALIDATION_SIZE,
+            random_state=RANDOM_STATE,
+            stratify=y,
+        )
+    )
 
     print(
         f"Training rows   : {len(X_train):,}"
     )
 
     print(
-        f"Validation rows : {len(X_validation):,}"
+        f"Validation rows : {len(X_valid):,}"
     )
+
+    # --------------------------------------------------------
+    # Target distribution
+    # --------------------------------------------------------
 
     print("\nTarget distribution")
 
+    print("\nFull dataset:")
+    print(
+        y.value_counts()
+        .sort_index()
+        .to_string()
+    )
+
     print("\nTraining:")
-    print(y_train.value_counts().sort_index())
+    print(
+        y_train.value_counts()
+        .sort_index()
+        .to_string()
+    )
 
     print("\nValidation:")
-    print(y_validation.value_counts().sort_index())
+    print(
+        y_valid.value_counts()
+        .sort_index()
+        .to_string()
+    )
 
     # --------------------------------------------------------
-    # 9. Build preprocessing pipeline
+    # Preprocessor
     # --------------------------------------------------------
 
-    print("\nBuilding preprocessing pipeline...")
-
-    transformers = []
-
-    if numeric_features:
-        transformers.append(
+    numeric_pipeline = Pipeline(
+        steps=[
             (
-                "numeric",
-                StandardScaler(),
-                numeric_features,
-            )
-        )
-
-    if categorical_features:
-        transformers.append(
-            (
-                "categorical",
-                OneHotEncoder(
-                    handle_unknown="ignore",
-                    sparse_output=False,
+                "imputer",
+                SimpleImputer(
+                    strategy="median"
                 ),
-                categorical_features,
-            )
-        )
+            ),
+            (
+                "scaler",
+                StandardScaler(),
+            ),
+        ]
+    )
 
     preprocessor = ColumnTransformer(
-        transformers=transformers,
+        transformers=[
+            (
+                "numeric",
+                numeric_pipeline,
+                numeric_features,
+            )
+        ],
         remainder="drop",
     )
 
     # --------------------------------------------------------
-    # 10. Fit ONLY on training data
+    # FIT ONLY ON TRAINING DATA
     # --------------------------------------------------------
 
     print(
-        "\nFitting preprocessing pipeline "
-        "on training data only..."
+        "\nFitting preprocessor on training data only..."
     )
 
-    X_train_processed = preprocessor.fit_transform(
-        X_train
-    )
-
-    X_validation_processed = preprocessor.transform(
-        X_validation
-    )
-
-    # --------------------------------------------------------
-    # 11. Feature names
-    # --------------------------------------------------------
-
-    feature_names = preprocessor.get_feature_names_out()
-
-    feature_count = len(feature_names)
-
-    print("\n## Processed datasets")
-
-    print(
-        f"Training matrix   : {X_train_processed.shape}"
-    )
-
-    print(
-        f"Validation matrix : {X_validation_processed.shape}"
-    )
-
-    print(
-        f"Final feature count: {feature_count}"
-    )
-
-    # --------------------------------------------------------
-    # 12. Validate matrices
-    # --------------------------------------------------------
-
-    if np.isnan(X_train_processed).any():
-        raise ValueError(
-            "NaN values found in processed training data."
+    X_train_processed = (
+        preprocessor.fit_transform(
+            X_train
         )
+    )
 
-    if np.isnan(X_validation_processed).any():
-        raise ValueError(
-            "NaN values found in processed validation data."
+    X_valid_processed = (
+        preprocessor.transform(
+            X_valid
         )
+    )
 
-    if np.isinf(X_train_processed).any():
-        raise ValueError(
-            "Infinite values found in processed training data."
-        )
-
-    if np.isinf(X_validation_processed).any():
-        raise ValueError(
-            "Infinite values found in processed validation data."
-        )
-
-    if X_train_processed.shape[1] != X_validation_processed.shape[1]:
-        raise ValueError(
-            "Training and validation feature counts do not match."
-        )
+    feature_names = (
+        preprocessor
+        .get_feature_names_out()
+        .tolist()
+    )
 
     # --------------------------------------------------------
-    # 13. Create output DataFrames
+    # Convert to DataFrame
     # --------------------------------------------------------
 
-    train_processed_df = pd.DataFrame(
+    X_train_processed = pd.DataFrame(
         X_train_processed,
         columns=feature_names,
         index=X_train.index,
     )
 
-    train_processed_df[TARGET_COLUMN] = y_train.values
-
-    validation_processed_df = pd.DataFrame(
-        X_validation_processed,
+    X_valid_processed = pd.DataFrame(
+        X_valid_processed,
         columns=feature_names,
-        index=X_validation.index,
+        index=X_valid.index,
     )
 
-    validation_processed_df[TARGET_COLUMN] = y_validation.values
+    train_processed = pd.concat(
+        [
+            X_train_processed,
+            y_train.rename(TARGET_COLUMN),
+        ],
+        axis=1,
+    )
+
+    validation_processed = pd.concat(
+        [
+            X_valid_processed,
+            y_valid.rename(TARGET_COLUMN),
+        ],
+        axis=1,
+    )
 
     # --------------------------------------------------------
-    # 14. Save processed datasets
+    # Save datasets
     # --------------------------------------------------------
 
     print("\nSaving processed datasets...")
 
-    train_processed_df.to_csv(
-        TRAIN_OUTPUT,
+    train_processed.to_csv(
+        TRAIN_FILE,
         index=False,
     )
 
-    validation_processed_df.to_csv(
-        VALIDATION_OUTPUT,
+    validation_processed.to_csv(
+        VALIDATION_FILE,
         index=False,
     )
-
-    # --------------------------------------------------------
-    # 15. Save preprocessor
-    # --------------------------------------------------------
 
     joblib.dump(
         preprocessor,
-        PREPROCESSOR_OUTPUT,
+        PREPROCESSOR_FILE,
     )
 
     # --------------------------------------------------------
-    # 16. Metadata
+    # Metadata
     # --------------------------------------------------------
 
     metadata = {
-        "pipeline": "transaction_fraud_ml_preprocessing",
-        "input_file": str(INPUT_FILE),
+        "pipeline": (
+            "Transaction Fraud Preprocessing Pipeline"
+        ),
+        "input_file": str(RAW_FILE),
         "target_column": TARGET_COLUMN,
         "random_state": RANDOM_STATE,
         "validation_size": VALIDATION_SIZE,
         "input_rows": int(len(df)),
         "input_columns": int(len(df.columns)),
         "training_rows": int(len(X_train)),
-        "validation_rows": int(len(X_validation)),
-        "numeric_feature_count": int(len(numeric_features)),
-        "categorical_feature_count": int(
-            len(categorical_features)
-        ),
-        "final_feature_count": int(feature_count),
-        "numeric_features": numeric_features,
-        "categorical_features": categorical_features,
-        "feature_names": feature_names.tolist(),
-        "training_target_distribution": {
-            str(k): int(v)
-            for k, v in y_train.value_counts().sort_index().items()
+        "validation_rows": int(len(X_valid)),
+        "feature_count": int(len(feature_names)),
+        "feature_names": feature_names,
+        "duplicate_rows_removed": duplicate_count,
+        "target_distribution": {
+            "full": {
+                str(k): int(v)
+                for k, v in y.value_counts()
+                .sort_index()
+                .items()
+            },
+            "train": {
+                str(k): int(v)
+                for k, v in y_train.value_counts()
+                .sort_index()
+                .items()
+            },
+            "validation": {
+                str(k): int(v)
+                for k, v in y_valid.value_counts()
+                .sort_index()
+                .items()
+            },
         },
-        "validation_target_distribution": {
-            str(k): int(v)
-            for k, v in y_validation.value_counts().sort_index().items()
+        "preprocessing": {
+            "numeric_imputation": "median",
+            "numeric_scaling": "StandardScaler",
+            "fit_preprocessor_on": (
+                "training_data_only"
+            ),
+            "split_strategy": "stratified",
         },
-        "preprocessor_type": type(preprocessor).__name__,
-        "scaler": "StandardScaler",
-        "categorical_encoder": (
-            "OneHotEncoder"
-            if categorical_features
-            else None
-        ),
-        "fit_scope": "training_data_only",
+        "outputs": {
+            "training_dataset": str(
+                TRAIN_FILE
+            ),
+            "validation_dataset": str(
+                VALIDATION_FILE
+            ),
+            "preprocessor": str(
+                PREPROCESSOR_FILE
+            ),
+            "metadata": str(
+                METADATA_FILE
+            ),
+        },
     }
 
     with open(
-        METADATA_OUTPUT,
+        METADATA_FILE,
         "w",
         encoding="utf-8",
-    ) as f:
+    ) as file:
+
         json.dump(
             metadata,
-            f,
+            file,
             indent=2,
         )
 
     # --------------------------------------------------------
-    # 17. Verify outputs
+    # Summary
     # --------------------------------------------------------
 
-    print("\nVerifying outputs...")
-
-    required_outputs = [
-        TRAIN_OUTPUT,
-        VALIDATION_OUTPUT,
-        PREPROCESSOR_OUTPUT,
-        METADATA_OUTPUT,
-    ]
-
-    for output in required_outputs:
-        if not output.exists():
-            raise FileNotFoundError(
-                f"Expected output was not created:\n{output}"
-            )
-
-    # Reload and verify processed files
-    train_check = pd.read_csv(TRAIN_OUTPUT)
-    validation_check = pd.read_csv(VALIDATION_OUTPUT)
-
-    expected_train_columns = feature_count + 1
-    expected_validation_columns = feature_count + 1
-
-    if train_check.shape[1] != expected_train_columns:
-        raise ValueError(
-            "Training output column count verification failed."
-        )
-
-    if validation_check.shape[1] != expected_validation_columns:
-        raise ValueError(
-            "Validation output column count verification failed."
-        )
-
-    if train_check[TARGET_COLUMN].isna().any():
-        raise ValueError(
-            "Missing target values in training output."
-        )
-
-    if validation_check[TARGET_COLUMN].isna().any():
-        raise ValueError(
-            "Missing target values in validation output."
-        )
-
-    print("\n## Output artifacts")
+    print("\n" + "=" * 75)
+    print("TRANSACTION FRAUD PREPROCESSING COMPLETE")
+    print("=" * 75)
 
     print(
-        f"Training output   : {TRAIN_OUTPUT}"
+        f"\nProcessed features : "
+        f"{len(feature_names)}"
     )
 
     print(
-        f"Validation output : {VALIDATION_OUTPUT}"
+        f"Training dataset   : "
+        f"{TRAIN_FILE}"
     )
 
     print(
-        f"Preprocessor      : {PREPROCESSOR_OUTPUT}"
+        f"Validation dataset : "
+        f"{VALIDATION_FILE}"
     )
 
     print(
-        f"Metadata          : {METADATA_OUTPUT}"
+        f"Preprocessor       : "
+        f"{PREPROCESSOR_FILE}"
     )
 
     print(
-        f"\nFinal feature count: {feature_count}"
+        f"Metadata            : "
+        f"{METADATA_FILE}"
     )
-
-    print("\n" + "=" * 70)
-    print(
-        "Transaction fraud ML preprocessing "
-        "pipeline completed successfully."
-    )
-    print("=" * 70)
 
 
 if __name__ == "__main__":
