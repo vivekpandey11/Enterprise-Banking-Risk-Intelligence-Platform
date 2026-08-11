@@ -1,0 +1,16 @@
+services:
+  risk-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: enterprise-risk-api
+
+    ports:
+      - "8000:8000"
+
+    restart: unless-stopped
+
+    environment:
+      PYTHONUNBUFFERED: "1"
+      PYTHONPATH: /app

@@ -1,0 +1,4 @@
+risk_domain,risk_score,probability,risk_segment,decision,weight
+Credit Risk,0.0,0.0,UNKNOWN,"{'default_probability': 0.017079, 'risk_segment': 'Low Risk', 'credit_decision': 'LOW_RISK', 'business_threshold': 0.18, 'default_prediction': 0}",0.35
+Fraud Risk,0.0,0.0,UNKNOWN,"{'fraud_probability': 0.016485, 'risk_segment': 'Low Risk', 'fraud_decision': 'LOW_RISK', 'business_threshold': 0.2, 'fraud_prediction': 0}",0.35
+AML Risk,2.8473933152915364e-10,2.847393315291536e-14,LOW RISK,LOW_RISK,0.3

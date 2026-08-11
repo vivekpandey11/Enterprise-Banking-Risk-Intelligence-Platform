@@ -1,0 +1,12 @@
+{
+    "dataset": "cs-training.csv",
+    "processed_at_utc": "2026-08-08T16:41:42.052175+00:00",
+    "source_rows": 150000,
+    "valid_rows": 149986,
+    "quarantined_rows": 14,
+    "quarantine_rule": "age_range",
+    "age_min": 18,
+    "age_max": 100,
+    "quarantine_file": "D:\\Enterprise-Banking-Risk-Intelligence-Platform\\data\\quarantine\\credit_risk\\credit_risk_invalid_age.csv",
+    "clean_staging_file": "D:\\Enterprise-Banking-Risk-Intelligence-Platform\\data\\staging\\credit_risk\\credit_risk_clean.csv"
+}

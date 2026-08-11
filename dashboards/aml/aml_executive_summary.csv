@@ -1,0 +1,2 @@
+dataset_rows,dataset_columns,legitimate_transactions,laundering_transactions,laundering_rate_percent,model_type,aml_probability,risk_segment,business_risk,aml_decision,alert_status,business_threshold
+100000,17,99997,3,0.003,logistic_regression,0.0,LOW RISK,LOW_RISK,LOW_RISK,NO_ALERT,0.01

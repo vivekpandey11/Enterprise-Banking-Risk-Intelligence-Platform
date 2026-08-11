@@ -1,0 +1,12 @@
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.git
+.gitignore
+.env
+*.log
+data/raw
+data/quarantine
+data/processed
+notebooks

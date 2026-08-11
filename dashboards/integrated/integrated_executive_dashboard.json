@@ -1,0 +1,117 @@
+{
+  "dashboard": {
+    "name": "Integrated Executive Risk Dashboard",
+    "version": "1.0",
+    "project": "Enterprise Banking Risk Intelligence Platform",
+    "purpose": "Unified executive view of credit, fraud and AML risk."
+  },
+  "executive_summary": {
+    "overall_risk_score": 0.0,
+    "risk_tier": "LOW",
+    "alert_status": "NO_ALERT",
+    "top_risk_driver": "aml_risk"
+  },
+  "risk_domains": {
+    "credit": {
+      "score": 0.0,
+      "probability": 0.0,
+      "risk_segment": "UNKNOWN",
+      "decision": "{'default_probability': 0.017079, 'risk_segment': 'Low Risk', 'credit_decision': 'LOW_RISK', 'business_threshold': 0.18, 'default_prediction': 0}",
+      "weight": 0.35
+    },
+    "fraud": {
+      "score": 0.0,
+      "probability": 0.0,
+      "risk_segment": "UNKNOWN",
+      "decision": "{'fraud_probability': 0.016485, 'risk_segment': 'Low Risk', 'fraud_decision': 'LOW_RISK', 'business_threshold': 0.2, 'fraud_prediction': 0}",
+      "weight": 0.35
+    },
+    "aml": {
+      "score": 2.8473933152915364e-10,
+      "probability": 2.847393315291536e-14,
+      "risk_segment": "LOW RISK",
+      "decision": "LOW_RISK",
+      "alert_status": "NO_ALERT",
+      "weight": 0.3
+    }
+  },
+  "risk_components": [
+    {
+      "risk_domain": "Credit Risk",
+      "risk_score": 0.0,
+      "probability": 0.0,
+      "risk_segment": "UNKNOWN",
+      "decision": "{'default_probability': 0.017079, 'risk_segment': 'Low Risk', 'credit_decision': 'LOW_RISK', 'business_threshold': 0.18, 'default_prediction': 0}",
+      "weight": 0.35
+    },
+    {
+      "risk_domain": "Fraud Risk",
+      "risk_score": 0.0,
+      "probability": 0.0,
+      "risk_segment": "UNKNOWN",
+      "decision": "{'fraud_probability': 0.016485, 'risk_segment': 'Low Risk', 'fraud_decision': 'LOW_RISK', 'business_threshold': 0.2, 'fraud_prediction': 0}",
+      "weight": 0.35
+    },
+    {
+      "risk_domain": "AML Risk",
+      "risk_score": 2.8473933152915364e-10,
+      "probability": 2.847393315291536e-14,
+      "risk_segment": "LOW RISK",
+      "decision": "LOW_RISK",
+      "weight": 0.3
+    }
+  ],
+  "alert_summary": [
+    {
+      "overall_risk_score": 0.0,
+      "risk_tier": "LOW",
+      "alert_status": "NO_ALERT",
+      "alert_triggered": false,
+      "top_risk_driver": "aml_risk"
+    }
+  ],
+  "source_assessment": {
+    "platform": {
+      "name": "Enterprise Banking Risk Intelligence Platform",
+      "engine": "Integrated Risk Engine",
+      "version": "1.0"
+    },
+    "risk_weights": {
+      "credit_risk": 0.35,
+      "fraud_risk": 0.35,
+      "aml_risk": 0.3
+    },
+    "credit_risk": {
+      "probability": 0.0,
+      "risk_score": 0.0,
+      "risk_segment": "UNKNOWN",
+      "decision": "{'default_probability': 0.017079, 'risk_segment': 'Low Risk', 'credit_decision': 'LOW_RISK', 'business_threshold': 0.18, 'default_prediction': 0}"
+    },
+    "fraud_risk": {
+      "probability": 0.0,
+      "risk_score": 0.0,
+      "risk_segment": "UNKNOWN",
+      "decision": "{'fraud_probability': 0.016485, 'risk_segment': 'Low Risk', 'fraud_decision': 'LOW_RISK', 'business_threshold': 0.2, 'fraud_prediction': 0}"
+    },
+    "aml_risk": {
+      "probability": 2.847393315291536e-14,
+      "risk_score": 2.8473933152915364e-10,
+      "risk_segment": "LOW RISK",
+      "decision": "LOW_RISK",
+      "alert_status": "NO_ALERT"
+    },
+    "integrated_risk": {
+      "overall_risk_score": 0.0,
+      "risk_tier": "LOW",
+      "alert_status": "NO_ALERT",
+      "top_risk_driver": "aml_risk"
+    },
+    "governance": {
+      "note": "Integrated score is a demonstration risk aggregation layer. Individual model outputs should be validated against production calibration and business policy before deployment."
+    }
+  },
+  "governance": {
+    "status": "DEMONSTRATION",
+    "note": "Integrated risk score is an aggregation layer for portfolio demonstration. Production deployment requires model calibration, independent validation, monitoring, and approved business policies."
+  }
+}

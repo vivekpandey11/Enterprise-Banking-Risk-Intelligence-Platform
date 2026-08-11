@@ -1,0 +1,15 @@
+Unnamed: 0,SeriousDlqin2yrs,RevolvingUtilizationOfUnsecuredLines,age,NumberOfTime30-59DaysPastDueNotWorse,DebtRatio,MonthlyIncome,NumberOfOpenCreditLinesAndLoans,NumberOfTimes90DaysLate,NumberRealEstateLoansOrLines,NumberOfTime60-89DaysPastDueNotWorse,NumberOfDependents,quarantine_rule,quarantine_reason,quarantined_at_utc,source_file
+7764,0,0.069167254,101,0,50.0,,2,0,0,0,0.0,age_range,Age outside allowed range 18-100,2026-08-08T16:41:42.052175+00:00,cs-training.csv
+19885,0,0.9999999,103,0,0.0,1600.0,3,0,0,0,0.0,age_range,Age outside allowed range 18-100,2026-08-08T16:41:42.052175+00:00,cs-training.csv
+25562,0,0.009866338,102,0,0.002423508,3300.0,3,0,0,0,0.0,age_range,Age outside allowed range 18-100,2026-08-08T16:41:42.052175+00:00,cs-training.csv
+40008,0,0.064747843,107,0,939.0,,9,0,1,0,0.0,age_range,Age outside allowed range 18-100,2026-08-08T16:41:42.052175+00:00,cs-training.csv
+56762,0,0.003469246,105,0,2.0,,4,0,0,0,,age_range,Age outside allowed range 18-100,2026-08-08T16:41:42.052175+00:00,cs-training.csv
+57968,0,0.001396781,103,0,1798.5,1.0,11,0,2,0,0.0,age_range,Age outside allowed range 18-100,2026-08-08T16:41:42.052175+00:00,cs-training.csv
+65696,0,0.9999999,0,1,0.436927179,6000.0,6,0,2,0,2.0,age_range,Age outside allowed range 18-100,2026-08-08T16:41:42.052175+00:00,cs-training.csv
+90938,0,0.0,102,0,0.0,,12,0,0,0,0.0,age_range,Age outside allowed range 18-100,2026-08-08T16:41:42.052175+00:00,cs-training.csv
+93814,0,0.025780444,101,0,0.013797241,1666.0,5,0,0,0,0.0,age_range,Age outside allowed range 18-100,2026-08-08T16:41:42.052175+00:00,cs-training.csv
+96451,0,0.109641899,102,0,0.273844353,3417.0,7,0,0,0,1.0,age_range,Age outside allowed range 18-100,2026-08-08T16:41:42.052175+00:00,cs-training.csv
+105791,0,0.109307222,109,0,2141.0,,17,0,1,0,,age_range,Age outside allowed range 18-100,2026-08-08T16:41:42.052175+00:00,cs-training.csv
+116130,1,0.002964233,101,2,0.001386963,2883.0,6,0,0,0,0.0,age_range,Age outside allowed range 18-100,2026-08-08T16:41:42.052175+00:00,cs-training.csv
+135026,0,0.004059033,103,0,5.0,,6,0,0,0,0.0,age_range,Age outside allowed range 18-100,2026-08-08T16:41:42.052175+00:00,cs-training.csv
+138292,0,0.24652915,109,0,318.0,,3,0,0,0,,age_range,Age outside allowed range 18-100,2026-08-08T16:41:42.052175+00:00,cs-training.csv

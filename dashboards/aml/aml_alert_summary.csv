@@ -1,0 +1,2 @@
+alert_id,aml_probability,risk_segment,alert_status,aml_decision,requires_review
+AML-DEMO-001,2.847393315291536e-14,LOW_RISK,NO_ALERT,LOW_RISK,False

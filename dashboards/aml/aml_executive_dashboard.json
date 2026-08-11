@@ -1,0 +1,456 @@
+{
+  "dashboard": {
+    "name": "AML Executive Risk Dashboard",
+    "version": "1.0",
+    "project": "Enterprise Banking Risk Intelligence Platform"
+  },
+  "dataset": {
+    "rows": 100000,
+    "columns": 17,
+    "column_names": [
+      "record_key",
+      "timestamp",
+      "from_bank",
+      "from_account",
+      "from_country",
+      "to_bank",
+      "to_account",
+      "to_country",
+      "amount_received",
+      "receiving_currency",
+      "amount_paid",
+      "payment_currency",
+      "payment_format",
+      "is_laundering",
+      "predicted_alert",
+      "model_score",
+      "is_dashboard_sample"
+    ],
+    "legitimate_transactions": 99997,
+    "laundering_transactions": 3,
+    "laundering_rate_percent": 0.003
+  },
+  "model": {
+    "model_type": "logistic_regression",
+    "default_threshold": 0.5,
+    "best_f1_threshold": 0.01,
+    "business_threshold": 0.01
+  },
+  "business_risk": {
+    "aml_probability": 0.0,
+    "risk_segment": "LOW RISK",
+    "business_risk": "LOW_RISK",
+    "aml_decision": "LOW_RISK",
+    "alert_status": "NO_ALERT",
+    "business_threshold": 0.01
+  },
+  "top_features": [
+    {
+      "feature": "categorical__from_country_CH",
+      "importance": 6.9568480185726695
+    },
+    {
+      "feature": "categorical__to_country_US",
+      "importance": 6.7285872061330005
+    },
+    {
+      "feature": "categorical__to_country_HK",
+      "importance": 5.958268268545284
+    },
+    {
+      "feature": "categorical__receiving_currency_USD",
+      "importance": 5.1253919026654255
+    },
+    {
+      "feature": "categorical__payment_currency_USD",
+      "importance": 5.104799903065592
+    },
+    {
+      "feature": "categorical__to_country_SG",
+      "importance": 3.937972656261851
+    },
+    {
+      "feature": "categorical__to_country_AE",
+      "importance": 3.7416770515615543
+    },
+    {
+      "feature": "numeric__high_value_transaction",
+      "importance": 3.5394827426059927
+    },
+    {
+      "feature": "categorical__to_country_DE",
+      "importance": 3.4803894909887387
+    },
+    {
+      "feature": "categorical__to_country_NL",
+      "importance": 3.166418042960093
+    }
+  ],
+  "business_summary": [
+    {
+      "generated_at": "2026-08-10T22:35:04.541670",
+      "model_type": "logistic_regression",
+      "aml_probability": 2.847393315291536e-14,
+      "aml_probability_percent": 2.8473933152915358e-12,
+      "risk_segment": "LOW RISK",
+      "business_risk": "LOW_RISK",
+      "aml_decision": "LOW_RISK",
+      "alert_status": "NO_ALERT",
+      "default_threshold": 0.5,
+      "best_f1_threshold": 0.01,
+      "business_threshold": 0.01
+    }
+  ],
+  "alert_summary": [
+    {
+      "alert_id": "AML-DEMO-001",
+      "aml_probability": 2.847393315291536e-14,
+      "risk_segment": "LOW_RISK",
+      "alert_status": "NO_ALERT",
+      "aml_decision": "LOW_RISK",
+      "requires_review": false
+    }
+  ],
+  "feature_importance": [
+    {
+      "feature": "categorical__from_country_CH",
+      "importance": 6.9568480185726695,
+      "importance_normalized": 0.0820059689954654
+    },
+    {
+      "feature": "categorical__to_country_US",
+      "importance": 6.7285872061330005,
+      "importance_normalized": 0.0793152750119496
+    },
+    {
+      "feature": "categorical__to_country_HK",
+      "importance": 5.958268268545284,
+      "importance_normalized": 0.0702349054618615
+    },
+    {
+      "feature": "categorical__receiving_currency_USD",
+      "importance": 5.1253919026654255,
+      "importance_normalized": 0.0604171211355319
+    },
+    {
+      "feature": "categorical__payment_currency_USD",
+      "importance": 5.104799903065592,
+      "importance_normalized": 0.0601743866563209
+    },
+    {
+      "feature": "categorical__to_country_SG",
+      "importance": 3.937972656261851,
+      "importance_normalized": 0.0464200544114598
+    },
+    {
+      "feature": "categorical__to_country_AE",
+      "importance": 3.7416770515615543,
+      "importance_normalized": 0.0441061600687886
+    },
+    {
+      "feature": "numeric__high_value_transaction",
+      "importance": 3.5394827426059927,
+      "importance_normalized": 0.0417227329496389
+    },
+    {
+      "feature": "categorical__to_country_DE",
+      "importance": 3.4803894909887387,
+      "importance_normalized": 0.0410261532130932
+    },
+    {
+      "feature": "categorical__to_country_NL",
+      "importance": 3.166418042960093,
+      "importance_normalized": 0.0373251189568092
+    },
+    {
+      "feature": "categorical__to_country_CH",
+      "importance": 2.97489524598876,
+      "importance_normalized": 0.0350674855417302
+    },
+    {
+      "feature": "numeric__log_amount_received",
+      "importance": 2.861617061328912,
+      "importance_normalized": 0.0337321843716776
+    },
+    {
+      "feature": "numeric__log_amount_paid",
+      "importance": 2.8609500979430176,
+      "importance_normalized": 0.0337243223372335
+    },
+    {
+      "feature": "categorical__to_country_GB",
+      "importance": 2.710408952471796,
+      "importance_normalized": 0.0319497726453189
+    },
+    {
+      "feature": "categorical__from_country_NL",
+      "importance": 2.4739318612503736,
+      "importance_normalized": 0.0291622267683542
+    },
+    {
+      "feature": "categorical__from_country_US",
+      "importance": 2.369198564492891,
+      "importance_normalized": 0.0279276510720392
+    },
+    {
+      "feature": "categorical__from_country_HK",
+      "importance": 2.249734073453032,
+      "importance_normalized": 0.0265194269276969
+    },
+    {
+      "feature": "categorical__from_country_DE",
+      "importance": 2.1430851045228225,
+      "importance_normalized": 0.0252622696610526
+    },
+    {
+      "feature": "categorical__from_country_GB",
+      "importance": 1.7542515862913053,
+      "importance_normalized": 0.0206787759070761
+    },
+    {
+      "feature": "categorical__from_country_AE",
+      "importance": 1.7330348782280651,
+      "importance_normalized": 0.0204286774862144
+    },
+    {
+      "feature": "numeric__payment_format_Cash",
+      "importance": 1.563279138920263,
+      "importance_normalized": 0.0184276299058571
+    },
+    {
+      "feature": "categorical__from_country_SG",
+      "importance": 1.5585179158889413,
+      "importance_normalized": 0.0183715055364236
+    },
+    {
+      "feature": "numeric__payment_format_Cheque",
+      "importance": 1.3338105873254316,
+      "importance_normalized": 0.0157226993284919
+    },
+    {
+      "feature": "numeric__amount_received",
+      "importance": 0.8491089848386699,
+      "importance_normalized": 0.0100091312759104
+    },
+    {
+      "feature": "categorical__payment_currency_JPY",
+      "importance": 0.6952181376669303,
+      "importance_normalized": 0.008195095952994
+    },
+    {
+      "feature": "categorical__receiving_currency_JPY",
+      "importance": 0.6951638924913447,
+      "importance_normalized": 0.0081944565214331
+    },
+    {
+      "feature": "categorical__payment_currency_CNY",
+      "importance": 0.62911995561946,
+      "importance_normalized": 0.0074159434613526
+    },
+    {
+      "feature": "categorical__receiving_currency_CNY",
+      "importance": 0.6230605497002654,
+      "importance_normalized": 0.0073445163649702
+    },
+    {
+      "feature": "numeric__amount_paid",
+      "importance": 0.5567171391753154,
+      "importance_normalized": 0.0065624731678157
+    },
+    {
+      "feature": "numeric__same_account",
+      "importance": 0.4198656862898421,
+      "importance_normalized": 0.004949294904851
+    },
+    {
+      "feature": "numeric__payment_format_Reinvestment",
+      "importance": 0.4182186763913547,
+      "importance_normalized": 0.0049298802730651
+    },
+    {
+      "feature": "numeric__same_country",
+      "importance": 0.3723019110406825,
+      "importance_normalized": 0.0043886223893703
+    },
+    {
+      "feature": "numeric__cross_border_transaction",
+      "importance": 0.3723019110406806,
+      "importance_normalized": 0.0043886223893703
+    },
+    {
+      "feature": "categorical__payment_currency_INR",
+      "importance": 0.3527806628364262,
+      "importance_normalized": 0.0041585097189889
+    },
+    {
+      "feature": "categorical__receiving_currency_INR",
+      "importance": 0.3526053013506332,
+      "importance_normalized": 0.0041564425919612
+    },
+    {
+      "feature": "categorical__receiving_currency_RUB",
+      "importance": 0.3516811717742855,
+      "importance_normalized": 0.0041455491325693
+    },
+    {
+      "feature": "categorical__payment_currency_RUB",
+      "importance": 0.3516587608079268,
+      "importance_normalized": 0.0041452849564644
+    },
+    {
+      "feature": "numeric__same_bank",
+      "importance": 0.3311783579497735,
+      "importance_normalized": 0.0039038659579012
+    },
+    {
+      "feature": "numeric__payment_format_ACH",
+      "importance": 0.3102397300784415,
+      "importance_normalized": 0.0036570454921615
+    },
+    {
+      "feature": "categorical__receiving_currency_UK Pound",
+      "importance": 0.1706714285584153,
+      "importance_normalized": 0.0020118415468338
+    },
+    {
+      "feature": "categorical__payment_currency_UK Pound",
+      "importance": 0.1706520493958518,
+      "importance_normalized": 0.0020116131090413
+    },
+    {
+      "feature": "numeric__payment_format_Wire",
+      "importance": 0.1556863796438553,
+      "importance_normalized": 0.0018352007098625
+    },
+    {
+      "feature": "numeric__payment_format_Credit Card",
+      "importance": 0.119867803447178,
+      "importance_normalized": 0.0014129783124197
+    },
+    {
+      "feature": "numeric__amount_difference_abs",
+      "importance": 0.0363291867780532,
+      "importance_normalized": 0.0004282413754904
+    },
+    {
+      "feature": "numeric__amount_difference",
+      "importance": 0.036204030107453,
+      "importance_normalized": 0.0004267660530424
+    },
+    {
+      "feature": "numeric__amount_ratio",
+      "importance": 0.0347633145138402,
+      "importance_normalized": 0.0004097831783288
+    },
+    {
+      "feature": "numeric__payment_format_Bitcoin",
+      "importance": 0.0344037415268033,
+      "importance_normalized": 0.0004055446020155
+    },
+    {
+      "feature": "categorical__payment_currency_EUR",
+      "importance": 0.019292779036414,
+      "importance_normalized": 0.0002274195203449
+    },
+    {
+      "feature": "numeric__same_currency",
+      "importance": 0.0138142148881188,
+      "importance_normalized": 0.0001628392735887
+    },
+    {
+      "feature": "numeric__currency_conversion",
+      "importance": 0.0138142148881134,
+      "importance_normalized": 0.0001628392735886
+    },
+    {
+      "feature": "numeric__amount_mismatch_flag",
+      "importance": 0.0124489745263684,
+      "importance_normalized": 0.000146746086203
+    },
+    {
+      "feature": "categorical__receiving_currency_EUR",
+      "importance": 0.0048818833252426,
+      "importance_normalized": 5.754668946921503e-05
+    },
+    {
+      "feature": "categorical__payment_currency_Bitcoin",
+      "importance": 0.0008267796473522,
+      "importance_normalized": 9.7459173961888e-06
+    },
+    {
+      "feature": "categorical__receiving_currency_Bitcoin",
+      "importance": 0.0008267796473522,
+      "importance_normalized": 9.7459173961888e-06
+    },
+    {
+      "feature": "categorical__receiving_currency_BRL",
+      "importance": 0.0003365969362171,
+      "importance_normalized": 3.967739102780477e-06
+    },
+    {
+      "feature": "categorical__payment_currency_BRL",
+      "importance": 0.0002998083894058,
+      "importance_normalized": 3.5340828807183177e-06
+    },
+    {
+      "feature": "categorical__receiving_currency_MXN",
+      "importance": 0.0001931712745987,
+      "importance_normalized": 2.2770653481672245e-06
+    },
+    {
+      "feature": "categorical__payment_currency_MXN",
+      "importance": 0.0001751423660554,
+      "importance_normalized": 2.064544086946937e-06
+    },
+    {
+      "feature": "categorical__receiving_currency_CAD",
+      "importance": 7.649436320521886e-05,
+      "importance_normalized": 9.01700649574069e-07
+    },
+    {
+      "feature": "categorical__payment_currency_CAD",
+      "importance": 5.7213971328349705e-05,
+      "importance_normalized": 6.744271466523607e-07
+    },
+    {
+      "feature": "categorical__payment_currency_AUD",
+      "importance": 2.477275207334214e-05,
+      "importance_normalized": 2.920163748058495e-07
+    },
+    {
+      "feature": "categorical__receiving_currency_AUD",
+      "importance": 1.679346744141623e-05,
+      "importance_normalized": 1.9795812222008118e-07
+    },
+    {
+      "feature": "numeric__transaction_day",
+      "importance": 0.0,
+      "importance_normalized": 0.0
+    },
+    {
+      "feature": "numeric__transaction_hour",
+      "importance": 0.0,
+      "importance_normalized": 0.0
+    },
+    {
+      "feature": "numeric__cross_border_currency_flag",
+      "importance": 0.0,
+      "importance_normalized": 0.0
+    },
+    {
+      "feature": "numeric__transaction_day_of_week",
+      "importance": 0.0,
+      "importance_normalized": 0.0
+    },
+    {
+      "feature": "numeric__is_weekend",
+      "importance": 0.0,
+      "importance_normalized": 0.0
+    },
+    {
+      "feature": "numeric__transaction_month",
+      "importance": 0.0,
+      "importance_normalized": 0.0
+    }
+  ]
+}
