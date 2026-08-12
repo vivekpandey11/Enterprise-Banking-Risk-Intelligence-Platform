@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 import json
 import joblib
 import pandas as pd

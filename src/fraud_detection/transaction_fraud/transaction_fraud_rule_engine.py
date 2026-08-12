@@ -1,4 +1,4 @@
-﻿"""
+"""
 EBRIP - Transaction Fraud Rule Engine
 
 Deterministic rule-based transaction fraud detection layer.
