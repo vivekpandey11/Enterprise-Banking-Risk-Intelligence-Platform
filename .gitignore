@@ -27,3 +27,8 @@ logs/*
 # OS
 .DS_Store
 Thumbs.db
+
+# Generated Excel backups
+reports/*_backup.xlsx
+reports/*_before_dashboard.xlsx
+reports/~$*.xlsx
